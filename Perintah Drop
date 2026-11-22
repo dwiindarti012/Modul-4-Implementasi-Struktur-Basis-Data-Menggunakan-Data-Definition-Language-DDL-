@@ -1,0 +1,14 @@
+Tahap 5: Pembuatan & Penghapusan Tabel (DROP TABLE)
+1.Membuat Tabel Uji Coba (tabel_cobacoba): Membuat tabel sementara dan melihat kemunculannya di panel kiri phpMyAdmin.   
+CREATE TABLE tabel_cobacoba (
+    id_coba int PRIMARY KEY
+);
+
+2.Menghapus Tabel Uji Coba: Menghapus tabel_cobacoba secara permanen dari database.   
+DROP TABLE tabel_cobacoba;
+
+Tahap 6: Melihat Sintaks DDL Pembuatan Tabel (SHOW CREATE TABLE)
+Menampilkan kembali query SQL lengkap (termasuk definisi constraint dan engine) yang digunakan untuk membentuk tabel program_studi, dosen, dan mahasiswa:   
+SHOW CREATE TABLE program_studi;
+SHOW CREATE TABLE dosen;
+SHOW CREATE TABLE mahasiswa;
