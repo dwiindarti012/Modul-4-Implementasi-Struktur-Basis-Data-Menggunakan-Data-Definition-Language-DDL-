@@ -1,0 +1,113 @@
+Tahap 1: Persiapan Server & Pembuatan Database
+Menjalankan Layanan XAMPP: Membuka XAMPP Control Panel dan mengaktifkan modul Apache serta MySQL hingga statusnya berubah menjadi running (berwarna hijau).   
+Membuat dan Mengaktifkan Database: Membuka phpMyAdmin pada server 127.0.0.1, kemudian membuat database baru, menggunakannya, dan mengecek database yang sedang aktif:   
+CREATE DATABASE db_dwi_indarti_wardani;
+USE db_dwi_indarti_wardani;
+SELECT DATABASE();
+
+Tahap 2: Pembuatan Tabel & Relasi (Primary Key & Foreign Key)
+Pembuatan tabel dilakukan secara berurutan dimulai dari tabel induk (parent table) yang tidak memiliki Foreign Key, baru dilanjutkan ke tabel anak (child table) agar tidak terjadi error referensi:   
+1. Membuat & Mengecek Struktur Tabel program_studi:
+CREATE TABLE program_studi (
+    kode_prodi varchar(20) NOT NULL,
+    nama_prodi char(10) NOT NULL,
+    fakultas varchar(20),
+    PRIMARY KEY (kode_prodi)
+);
+
+DESC program_studi;
+
+2. Membuat & Mengecek Struktur Tabel dosen (terhubung ke program_studi):   CREATE TABLE dosen (
+    kode_induk_dosen varchar(100) NOT NULL,
+    email varchar(100),
+    nama_dosen varchar(50) NOT NULL,
+    jenis_kelamin char(1),
+    no_telepon char(12),
+    kode_prodi varchar(20) NOT NULL,
+    PRIMARY KEY (kode_induk_dosen),
+    CONSTRAINT fk_prodi_dosen FOREIGN KEY (kode_prodi) REFERENCES program_studi(kode_prodi)
+);
+
+DESC dosen;
+
+3. Membuat & Mengecek Struktur Tabel mahasiswa (terhubung ke program_studi dan dosen):   
+CREATE TABLE mahasiswa (
+    nim varchar(10) NOT NULL,
+    nama_mhs varchar(100) NOT NULL,
+    jenis_kelamin char(1),
+    alamat varchar(200),
+    tanggal_lahir date,
+    tahun_angkatan char(10),
+    kode_prodi varchar(20) NOT NULL,
+    kode_induk_dosen varchar(100) NOT NULL,
+    PRIMARY KEY (nim),
+    CONSTRAINT fk_mahasiswa_prodi FOREIGN KEY (kode_prodi) REFERENCES program_studi(kode_prodi),
+    CONSTRAINT fk_mahasiswa_dosen FOREIGN KEY (kode_induk_dosen) REFERENCES dosen(kode_induk_dosen)
+);
+
+DESC mahasiswa;
+
+4. Membuat & Mengecek Struktur Tabel mata_kuliah (terhubung ke program_studi):   
+CREATE TABLE mata_kuliah (
+    kode_mk varchar(20) NOT NULL,
+    nama_mk varchar(20) NOT NULL,
+    jumlah_sks int NOT NULL,
+    kode_prodi varchar(20) NOT NULL,
+    PRIMARY KEY (kode_mk),
+    CONSTRAINT fk_matkul_prodi FOREIGN KEY (kode_prodi) REFERENCES program_studi(kode_prodi)
+);
+
+DESC mata_kuliah;
+5. Membuat & Mengecek Struktur Tabel krs (terhubung ke mahasiswa dan mata_kuliah):   
+CREATE TABLE krs (
+    id_krs int NOT NULL AUTO_INCREMENT,
+    semester char(6) DEFAULT 'Ganjil',
+    tanggal_pengambilan date NOT NULL,
+    nim varchar(10) NOT NULL,
+    kode_mk varchar(20) NOT NULL,
+    PRIMARY KEY (id_krs),
+    CONSTRAINT fk_krs_mahasiswa FOREIGN KEY (nim) REFERENCES mahasiswa(nim),
+    CONSTRAINT fk_krs_matkul FOREIGN KEY (kode_mk) REFERENCES mata_kuliah(kode_mk)
+);
+
+DESC krs;
+
+6.Membuat & Mengecek Struktur Tabel nilai (terhubung ke mahasiswa dan dosen):   
+CREATE TABLE nilai (
+    id_nilai int NOT NULL AUTO_INCREMENT,
+    nilai_tugas decimal(5,2),
+    nilai_uts decimal(5,2),
+    nilai_uas decimal(5,2),
+    nilai_akhir decimal(5,2),
+    nim varchar(10) NOT NULL,
+    kode_induk_dosen varchar(100) NOT NULL,
+    PRIMARY KEY (id_nilai),
+    CONSTRAINT fk_nilai_mahasiswa FOREIGN KEY (nim) REFERENCES mahasiswa(nim),
+    CONSTRAINT fk_nilai_dosen FOREIGN KEY (kode_induk_dosen) REFERENCES dosen(kode_induk_dosen)
+);
+
+DESC nilai;
+
+7.Membuat & Mengecek Struktur Tabel kelas_kuliah (terhubung ke dosen dan mata_kuliah):   
+CREATE TABLE kelas_kuliah (
+    kode_kelas varchar(20) NOT NULL,
+    nama_kelas varchar(100) NOT NULL,
+    tahun_ajaran char(10) NOT NULL,
+    kode_induk_dosen varchar(100) NOT NULL,
+    kode_mk varchar(20) NOT NULL,
+    PRIMARY KEY (kode_kelas),
+    CONSTRAINT fk_kelas_dosen FOREIGN KEY (kode_induk_dosen) REFERENCES dosen(kode_induk_dosen),
+    CONSTRAINT fk_kelas_matkul FOREIGN KEY (kode_mk) REFERENCES mata_kuliah(kode_mk)
+);
+
+DESC kelas_kuliah;
+
+Tahap 3: Verifikasi Seluruh Tabel yang TerbentukMenampilkan Daftar Tabel: Mengecek apakah ketujuh tabel sudah berhasil masuk ke dalam database db_dwi_indarti_wardani.   SQLSHOW TABLES;
+Mengecek Struktur Semua Tabel Sekaligus: Memastikan tipe data, Primary Key (PRI), dan Foreign Key (MUL) pada seluruh tabel sudah sesuai.  
+DESC program_studi;
+DESC dosen;
+DESC mahasiswa;
+DESC mata_kuliah;
+DESC krs;
+DESC nilai;
+DESC kelas_kuliah;
