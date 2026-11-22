@@ -1,0 +1,24 @@
+Tahap 4: Modifikasi Struktur Tabel (ALTER TABLE)Melakukan perubahan pada kolom tabel yang sudah dibuat, lalu mengecek hasilnya menggunakan perintah DESC:   
+1.Menambahkan Constraint UNIQUE pada kolom email di tabel dosen:
+ALTER TABLE dosen
+MODIFY email varchar(100) UNIQUE;
+
+DESC dosen;
+
+2.Menambahkan Kolom Baru (status) dengan nilai default pada tabel mahasiswa:
+ALTER TABLE mahasiswa
+ADD status varchar(10) DEFAULT 'Aktif';
+
+DESC mahasiswa;
+
+3.Mengubah Nama Kolom jenis_kelamin menjadi gender pada tabel dosen:
+ALTER TABLE dosen
+CHANGE jenis_kelamin gender char(1);
+
+DESC dosen;
+
+4.Menghapus Kolom no_telepon pada tabel dosen:
+ALTER TABLE dosen
+DROP COLUMN no_telepon;
+
+DESC dosen;
